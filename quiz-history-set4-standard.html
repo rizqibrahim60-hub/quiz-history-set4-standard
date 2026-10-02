@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>معايير التاريخ - أسئلة من اختبارات سابقة (1 - 88)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800;900&family=Almarai:wght@700;800&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', 'Almarai', sans-serif; }
+        body { background-color: #0b1329; display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
+        
+        .main-controls { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; background: #111936; padding: 12px 24px; border-radius: 50px; border: 1px solid #d4af37; justify-content: center; box-shadow: 0 10px 25px rgba(0,0,0,0.4); z-index: 1000; align-items: center; }
+        .btn-ctrl { border: none; padding: 9px 18px; border-radius: 20px; font-size: 14px; font-weight: 800; cursor: pointer; color: #ffffff; transition: all 0.2s ease; }
+        .btn-nav { background: #1e3a8a; } 
+
+        .pen-toolbar { display: none; gap: 12px; margin-bottom: 15px; background: #111d38; padding: 8px 22px; border-radius: 30px; border: 1.5px solid #10b981; align-items: center; z-index: 1000; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        .color-dot { width: 28px; height: 28px; border-radius: 50%; border: 2px solid #fff; cursor: pointer; display: inline-block; transition: 0.2s; }
+        .color-dot.selected { transform: scale(1.25); border-width: 3px; border-color: #ffd700; }
+        .pen-size-select { background: #0b1329; color: #fff; border: 1px solid #d4af37; padding: 5px 14px; border-radius: 10px; font-weight: bold; font-size: 14px; }
+        .btn-clear-canvas { background: #ef4444; color: white; border: none; padding: 6px 16px; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 13px; transition: 0.2s; }
+        .btn-clear-canvas:hover { background: #dc2626; }
+
+        #quiz-app-wrapper { position: relative; width: 100%; max-width: 1020px; }
+        #quiz-app { width: 100%; min-height: 520px; background: #ffffff; border-radius: 24px; overflow: hidden; box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6); border: 4px solid #0f2c59; display: flex; flex-direction: column; justify-content: space-between; }
+        
+        #drawCanvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 500; touch-action: none; border-radius: 24px; }
+
+        .top-header {
+            position: relative;
+            background: radial-gradient(circle at center, #103b70 0%, #081d3d 100%);
+            padding: 18px 30px 22px 30px;
+            color: #ffffff;
+            border-bottom: 5px solid #d4af37;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-side { display: flex; flex-direction: column; align-items: center; gap: 6px; min-width: 140px; }
+        .header-center { text-align: center; flex-grow: 1; }
+        .main-title { font-size: 34px; font-weight: 900; color: #ffffff; line-height: 1.2; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
+        .sub-title { color: #ffd700; font-size: 18px; font-weight: 800; margin: 4px 0; }
+        .author-name { color: #ffffff; font-size: 18px; font-weight: 800; }
+
+        .gold-exam-tag-side {
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.25) 0%, rgba(255, 215, 0, 0.1) 100%);
+            color: #ffd700;
+            border: 1.5px solid #d4af37;
+            padding: 5px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 800;
+            box-shadow: 0 2px 8px rgba(212, 175, 55, 0.2);
+            white-space: nowrap;
+            text-align: center;
+            direction: rtl;
+            unicode-bidi: isolate;
+        }
+
+        .gold-sub-badge {
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.2) 0%, rgba(255, 215, 0, 0.08) 100%);
+            color: #ffd700;
+            border: 1px solid #d4af37;
+            padding: 3px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: 800;
+            white-space: nowrap;
+            text-align: center;
+            direction: rtl;
+            unicode-bidi: isolate;
+        }
+
+        .header-icon-box { width: 56px; height: 56px; border-radius: 50%; border: 2px solid #d4af37; display: flex; align-items: center; justify-content: center; font-size: 26px; background: rgba(212, 175, 55, 0.12); color: #ffd700; }
+
+        .progress-bar-container { background: #e2e8f0; height: 9px; width: 100%; }
+        .progress-bar { background: #10b981; height: 100%; width: 0%; transition: width 0.3s ease; }
+
+        .status-row { display: flex; justify-content: space-between; padding: 14px 40px 0 40px; font-size: 17px; font-weight: 900; color: #0f2c59; }
+        .card-body { padding: 18px 40px 30px 40px; flex-grow: 1; display: flex; flex-direction: column; gap: 22px; justify-content: center; }
+
+        .question-card-container { background: #ffffff; border: 2.5px solid #0f2c59; border-radius: 18px; padding: 18px 24px; box-shadow: 0 6px 18px rgba(15, 44, 89, 0.07); }
+        .question-header-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+        .badge-q-tag { background: #0f2c59; color: #ffd700; border: 1.5px solid #d4af37; padding: 7px 18px; border-radius: 12px; font-size: 19px; font-weight: 900; white-space: nowrap; }
+        .q-text-content { font-size: 22px; font-weight: 900; color: #0f172a; line-height: 1.45; flex-grow: 1; }
+
+        .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+        .option-btn { background: #f8fafc; border: 2.5px solid #cbd5e1; border-radius: 14px; padding: 14px 20px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; transition: all 0.2s ease; text-align: right; min-height: 64px; }
+        .option-btn:hover:not([disabled]) { border-color: #0284c7; background: #f0f9ff; transform: translateY(-2px); }
+        .opt-letter { width: 38px; height: 38px; background: #e2e8f0; color: #0f2c59; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 18px; flex-shrink: 0; }
+        .opt-text { font-size: 18px; font-weight: 800; color: #1e293b; flex-grow: 1; padding: 0 14px; }
+
+        .option-btn.correct { background: #ecfdf5 !important; border-color: #10b981 !important; }
+        .option-btn.correct .opt-letter { background: #10b981 !important; color: #ffffff !important; }
+        .option-btn.wrong { background: #fef2f2 !important; border-color: #ef4444 !important; }
+        .option-btn.wrong .opt-letter { background: #ef4444 !important; color: #ffffff !important; }
+
+        .check-mark { font-size: 20px; font-weight: 900; color: #10b981; margin-right: auto; margin-left: 8px; background: #d1fae5; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 1.5px solid #10b981; }
+
+        .conclusion-card-box {
+            background: radial-gradient(circle at center, #103b70 0%, #081d3d 100%);
+            border: 3px solid #d4af37;
+            border-radius: 20px;
+            padding: 40px 30px;
+            text-align: center;
+            color: #ffffff;
+            box-shadow: 0 10px 30px rgba(15, 44, 89, 0.2);
+            animation: fadeIn 0.4s ease-in-out;
+        }
+
+        .conclusion-main-title {
+            font-size: 36px;
+            font-weight: 900;
+            color: #ffd700;
+            margin-bottom: 18px;
+            line-height: 1.4;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+            direction: rtl;
+        }
+
+        .conclusion-sub-tag {
+            display: inline-block;
+            background: rgba(212, 175, 55, 0.2);
+            color: #ffffff;
+            border: 2px solid #d4af37;
+            padding: 10px 30px;
+            border-radius: 30px;
+            font-size: 22px;
+            font-weight: 900;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.25);
+            direction: rtl;
+        }
+
+        .bottom-footer { background: radial-gradient(circle at center, #103b70 0%, #081d3d 100%); border-top: 4px solid #d4af37; padding: 14px 35px; display: flex; justify-content: space-between; align-items: center; color: #ffffff; }
+        .footer-sec { display: flex; align-items: center; gap: 12px; }
+        .footer-sec-center { text-align: center; }
+        .footer-icon-circle { width: 44px; height: 44px; background: rgba(212, 175, 55, 0.15); border: 2px solid #d4af37; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; color: #ffd700; }
+        .footer-text-title { font-size: 13px; color: #ffd700; font-weight: 800; }
+        .footer-text-val { font-size: 16px; font-weight: 900; direction: ltr; color: #ffffff; letter-spacing: 0.5px; }
+        .footer-author-main { font-size: 20px; font-weight: 900; color: #ffffff; }
+
+        @media print {
+            body { background: none; padding: 0; }
+            .main-controls, .pen-toolbar, .progress-bar-container, .status-row, #drawCanvas { display: none !important; }
+            #quiz-app { box-shadow: none; border: 2px solid #0f2c59; max-width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="main-controls">
+        <button class="btn-ctrl btn-nav" id="btn-prev" onclick="prevQuestion()">➔ السابق</button>
+        <button class="btn-ctrl btn-nav" id="btn-next-top" onclick="nextQuestion()">التالي ⬅</button>
+    </div>
+
+    <div id="quiz-app-wrapper">
+        <canvas id="drawCanvas" width="1020" height="560"></canvas>
+        <div id="quiz-app">
+            <div class="top-header">
+                <div class="header-side">
+                    <div class="header-icon-box">📖</div>
+                    <div class="gold-sub-badge">لا يخرج منها الاختبار</div>
+                </div>
+
+                <div class="header-center">
+                    <div class="main-title">معايير التاريخ</div>
+                    <div class="sub-title">الرخصة المهنية - تخصص التاريخ</div>
+                    <div class="author-name">إبراهيم أبوزيد | معلّم ومدرب وباحث</div>
+                </div>
+
+                <div class="header-side">
+                    <div class="header-icon-box">⏳</div>
+                    <div class="gold-exam-tag-side">أسئلة من اختبارات سابقة</div>
+                </div>
+            </div>
+
+            <div class="progress-bar-container">
+                <div class="progress-bar" id="progress-bar"></div>
+            </div>
+
+            <div id="quiz-screen">
+                <div class="status-row">
+                    <span id="question-count">السؤال 1 من 88</span>
+                    <span id="score-count">النقاط: 0</span>
+                </div>
+
+                <div class="card-body" id="card-body-content">
+                    <div class="question-card-container" id="q-box-container">
+                        <div class="question-header-row">
+                            <div class="badge-q-tag" id="q-badge">سؤال 1</div>
+                            <div class="q-text-content" id="q-text">نص السؤال...</div>
+                        </div>
+                    </div>
+
+                    <div class="options-grid" id="options-container"></div>
+                </div>
+            </div>
+
+            <div class="bottom-footer">
+                <div class="footer-sec">
+                    <div class="footer-icon-circle">📞</div>
+                    <div>
+                        <div class="footer-text-title">رقم الهاتف</div>
+                        <div class="footer-text-val">966 55 783 1353</div>
+                    </div>
+                </div>
+
+                <div class="footer-sec-center">
+                    <div class="footer-author-main">إبراهيم أبوزيد</div>
+                </div>
+
+                <div class="footer-sec" style="direction: ltr;">
+                    <div class="footer-icon-circle">✈</div>
+                    <div style="text-align: right;">
+                        <div class="footer-text-title">حساب تليجرام</div>
+                        <div class="footer-text-val">t.me/myibhistoricy</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var rawCardsData = [
+            { num: 1, q: "من الاعتقادات الخاطئة الشائعة حول كيفية انتشار الإسلام واستقراره في أرجاء شبه الجزيرة العربية:", options: ["أنه انتشر بالفتوحات العسكرية الجبرية", "أنه انتشر بالدعوة والوفود السلمية", "أنه دخل طواعية بعد فتح مكة", "أنه انتشر بحسن المعاملة والتجارة"], correct: 0 },
+            { num: 2, q: "طلب المعلم من الطلاب تخيل الأحداث التاريخية والنتائج والسيناريوهات المترتبة عليها، يهدف لتنمية مهارة:", options: ["التفكير الإبداعي والتباعدي", "الحفظ والاسترجاع الآلي", "التفكير الحسي الحركي", "التلخيص اللغوي المجرد"], correct: 0 },
+            { num: 3, q: "مجموعة من المفاهيم والمعاني التي تربط بينها أوجه شبه وتشترك في خصائص وصفات عامة تُعرف بـ:", options: ["التعميمات التاريخية", "الحقائق المفردة", "الأحداث الجزئية", "الافتراضات المسبقة"], correct: 0 },
+            { num: 4, q: "عالم الرياضيات الإغريقي الشهير إقليدس أحدث نهضة تعليمية ورياضية كبرى في مكتبة وجامعة:", options: ["الإسكندرية", "أثينا", "روما", "القيروان"], correct: 0 },
+            { num: 5, q: "يتمثل الدور الأساسي والتربوي للمعلم في تطبيق استراتيجية حل المشكلات التاريخية في:", options: ["إدارة الموقف التعليمي وتوجيه الطلاب", "إلقاء الإجابات الجاهزة للطلاب", "حفظ تسلسل التواريخ فقط", "إجراء الاختبارات التحريرية"], correct: 0 },
+            { num: 6, q: "إذا أراد معلم التاريخ استطلاع آراء الطلاب ومناقشتهم حول دوافع حدث تاريخي معين فإنه يستخدم أسلوب:", options: ["الحوار والمناقشة", "المحاضرة التقليدية", "التسميع الإملائي", "القراءة الصامتة الفردية"], correct: 0 },
+            { num: 7, q: "وقعت الدول العربية الهدنة الدائمة مع الجانب الإسرائيلي في نهاية حرب عام 1948م في جزيرة:", options: ["رودوس", "قبرص", "كريت", "مالطا"], correct: 0 },
+            { num: 8, q: "عندما يطرح المعلم أسئلة حول حدث تاريخي ويتتبع كافة جزيئاته وصولاً لحكم كلي، فإنه يمارس:", options: ["الاستقراء الكامل التام", "الاستنباط القياسي", "التخمين الفلسفي", "التفكير الحدسي"], correct: 0 },
+            { num: 9, q: "السبب التاريخي لعدم توجه جيوش الفتوحات الإسلامية لفتح أرض الحبشة في العصر الراشدي:", options: ["لأن الإسلام وصلها سلمياً بإسلام النجاشي وإكرام المهاجرين", "لوعورة مسالكها الجبلية", "لقوتهم البحرية المهيمنة", "لوجود معاهدة تجارية"], correct: 0 },
+            { num: 10, q: "عزف أغلب أشراف العرب قبل الإسلام عن ممارسة حرفتي الحدادة والنجارة بسبب:", options: ["نظرتهم الاجتماعية الدونية وتقليلهم من شأن الحرف اليدوية", "عدم توفر المعادن والأخشاب", "احتكار الروم لها", "انشغالهم الدائم بالزراعة"], correct: 0 },
+            { num: 11, q: "مدد حكم ملوك المملكة (الملك عبد العزيز، والملك سعود، والملك فيصل، والملك خالد) على الترتيب:", options: ["عبد العزيز (54) ، سعود (11) ، فيصل (11) ، خالد (7) أعوام", "عبد العزيز (40) ، سعود (15) ، فيصل (10) ، خالد (10) أعوام", "عبد العزيز (50) ، سعود (12) ، فيصل (15) ، خالد (5) أعوام", "عبد العزيز (54) ، سعود (10) ، فيصل (8) ، خالد (8) أعوام"], correct: 0 },
+            { num: 12, q: "من أقوى الأحداث تأثيراً في مسار العالم وخاتمة الحرب العالمية الثانية عام 1945م:", options: ["إلقاء القنبلة الذرية على هيروشيما وناجازاكي واستسلام اليابان", "معركة ستالينجراد", "سقوط برلين", "إنزال نورماندي"], correct: 0 },
+            { num: 13, q: "أقدمت بريطانيا على احتلال واستعمار العراق إبان الحرب العالمية الأولى لخشيتها من أطماع:", options: ["روسيا وألمانيا (ومشروع سكة حديد برلين-بغداد)", "فرنسا وإيطاليا", "الولايات المتحدة", "اليابان وهولندا"], correct: 0 },
+            { num: 14, q: "وجهتا رحلتي الشتاء والصيف اللتان اشتهرت بهما قريش تاريخياً هما على الترتيب:", options: ["اليمن شتاءً – الشام صيفاً", "الشام شتاءً – اليمن صيفاً", "مصر شتاءً – العراق صيفاً", "الحجاز شتاءً – نجد صيفاً"], correct: 0 },
+            { num: 15, q: "النبي الكريم الذي استثناه الله عز وجل فآمن به جميع قومه بعد أن كشف عنهم العذاب:", options: ["يونس عليه السلام", "هود عليه السلام", "صالح عليه السلام", "لوط عليه السلام"], correct: 0 },
+            { num: 16, q: "نمط التفكير الضروري الذي يحتاج المعلم لتعزيزه لتمكين الطلاب من نقد الوثيقة وفحص مصداقيتها:", options: ["التفكير الناقد والتحليلي", "التفكير العاطفي", "التفكير الخيالي الحر", "التفكير الروتيني التقليدي"], correct: 0 },
+            { num: 17, q: "الترتيب الجغرافي لانطلاق وانتشار حركة النهضة في دول أوروبا الحديثة:", options: ["إيطاليا ثم البرتغال ثم ألمانيا ثم فرنسا", "فرنسا ثم إيطاليا ثم إنجلترا", "ألمانيا ثم إسبانيا ثم البرتغال", "إنجلترا ثم إيطاليا ثم روسيا"], correct: 0 },
+            { num: 18, q: "سقطت الدرعية وهُدمت أسوارها عام 1233هـ / 1818م على يد حملة القائد:", options: ["إبراهيم باشا", "طوسون باشا", "محمد علي باشا", "خالد باشا"], correct: 0 },
+            { num: 19, q: "كانت الأوضاع السياسية السائدة في منطقة نجد قبل قيام الدولة السعودية الأولى تتسم بـ:", options: ["التفكك إلى بلدات وإمارات متناحرة ومستقلة", "الخضوع لحكم مركزي موحد", "التبعية المباشرة لدولة المماليك", "الخضوع للإمبراطورية الفارسية"], correct: 0 },
+            { num: 20, q: "بدأت الانطلاقة والتطبيق الفعلي لدعوة الشيخ محمد بن عبد الوهاب بالأمر والنهي وإقامة الحدود في بلدة:", options: ["العيينة", "حريملاء", "الدرعية", "الرياض"], correct: 0 },
+            { num: 21, q: "تولى الملك عبد العزيز الحكم مدة 54 عاماً من استعادة الرياض، بينما امتد حكمه بعد إعلان توحيد المملكة لمدة:", options: ["22 عاماً (من 1351هـ إلى 1373هـ)", "30 عاماً", "15 عاماً", "18 عاماً"], correct: 0 },
+            { num: 22, q: "دارت أحداث معركة الصريف المشهورة عام 1318هـ (1901م) بين كل من قوات:", options: ["الشيخ مبارك الصباح (حاكم الكويت) ضد عبد العزيز بن رشيد (حاكم حائل)", "الملك عبد العزيز ضد الشريف حسين", "الإمام فيصل بن تركي ضد الأتراك", "محمد بن سعود ضد دهام بن دواس"], correct: 0 },
+            { num: 23, q: "امتدت الفتوحات والتوسعات العسكرية للدولة العثمانية في أوج قوتها في أوروبا حتى أسوار مدينة:", options: ["فيينا (عاصمة النمسا)", "باريس", "روما", "لندن"], correct: 0 },
+            { num: 24, q: "الجيش الإسلامي التاريخي الذي جهزه الرسول ﷺ في السنة الثامنة للهجرة لمواجهة الروم بالشام هو جيش:", options: ["غزوة مؤتة", "غزوة تبوك", "سرية نخلة", "غزوة حنين"], correct: 0 },
+            { num: 25, q: "تصدى لحركات الردة وثبّت دعائم الدولة الإسلامية بعد وفاة النبي ﷺ الخليفة الراشد:", options: ["أبو بكر الصديق رضي الله عنه", "عمر بن الخطاب", "عثمان بن عفان", "علي بن أبي طالب"], correct: 0 },
+            { num: 26, q: "المؤسس والمنظر الروحي الأول لدولة الموحدين في المغرب والأندلس هو:", options: ["محمد بن تومرت (المهدي)", "عبد المؤمن بن علي", "يوسف بن تاشفين", "يعقوب المنصور"], correct: 0 },
+            { num: 27, q: "القائد المسلم الفاتح الذي عبر المضيق وخاض معركة وادي لكة عام 92هـ لفتح بلاد الأندلس:", options: ["طارق بن زياد", "موسى بن نصير", "عقبة بن نافع", "عبد الرحمن الداخل"], correct: 0 },
+            { num: 28, q: "وقعت حادثة الإسراء والمعراج في العهد المكي تسريةً للنبي ﷺ مباشرة بعد:", options: ["انتهاء حصار الشِّعب وعام الحزن", "بيعة العقبة الأولى", "الهجرة إلى الحبشة", "الهجرة إلى المدينة"], correct: 0 },
+            { num: 29, q: "الحقبة التاريخية التي تلت عصر الخلفاء الراشدين وسبقت قيام الدولة العباسية هي حقبة:", options: ["الدولة الأموية", "دولة المماليك", "الدولة الإخشيدية", "الدولة الفاطمية"], correct: 0 },
+            { num: 30, q: "أفضل وسيلة بيانية لتدريس التزامن بين أحداث التاريخ الهجري والتاريخ الميلادي معاً هي:", options: ["الخط الزمني المزدوج المقارن", "الخريطة الجغرافية الصامتة", "الدائرة النسبية الإحصائية", "الهرم السكاني"], correct: 0 },
+            { num: 31, q: "الاستراتيجية التدريسية المثالية لمخاطبة وتنمية مهارات الطالب ذي النمط (الحسي الحركي) في التاريخ هي:", options: ["لعب الأدوار والمحاكاة التمثيلية", "المحاضرة الصوتية الإلقائية", "القراءة من الكتاب المدرسي", "التلخيص النظري الصامت"], correct: 0 },
+            { num: 32, q: "أصاب المسلمين قحط وجدب شديد سُمي بـ (عام الرمادة) في عهد الخليفة الراشد:", options: ["عمر بن الخطاب رضي الله عنه", "أبو بكر الصديق", "عثمان بن عفان", "علي بن أبي طالب"], correct: 0 },
+            { num: 33, q: "الترتيب الزمني الصحيح للأحداث التاريخية في السيرة النبوية:", options: ["الإسراء والمعراج – غزوة بدر – إرسال الرسائل للملوك والزعماء", "غزوة بدر – الإسراء والمعراج – إرسال الرسائل", "إرسال الرسائل – الإسراء والمعراج – غزوة بدر", "غزوة بدر – إرسال الرسائل – الإسراء والمعراج"], correct: 0 },
+            { num: 34, q: "من أعظم النتائج السياسية والدعوية المباشرة لصلح الحديبية (6هـ):", options: ["تفرغ المسلمين ودخول القبائل العربية في الإسلام بأعداد كبرى", "استسلام قريش التام", "فتح بلاد الشام", "إلغاء الجزية"], correct: 0 },
+            { num: 35, q: "التغذية الراجعة الفعالة والمحققة لأهداف التعلم البنائي يجب أن تقدم للطالب:", options: ["أثناء الموقف التعليمي ومباشرة عند التعلم", "في نهاية العام الدراسي فقط", "قبل بدء الدرس بدون نشاط", "بعد مرور أسابيع من الاختبار"], correct: 0 },
+            { num: 36, q: "الاسم التاريخي القديم لمدينة إسطنبول قبل الفتح العثماني الإسلامي عام 1453م هو:", options: ["القسطنطينية (بيزنطة)", "أثينا", "أنطاكية", "طرابزون"], correct: 0 },
+            { num: 37, q: "رأى كارل ماركس في نظريته المادية التاريخية أن الطبقة البرجوازية الرأسمالية تستغل وتضطهد طبقة:", options: ["البروليتاريا (الطبقة العاملة)", "الإقطاعيين", "الأرستقراطيين", "رجال الدين"], correct: 0 },
+            { num: 38, q: "الاتفاقية السرية الموقعة عام 1916م بين فرنسا وبريطانيا لتقسيم ولايات الدولة العثمانية بالمشرق العربي:", options: ["اتفاقية سايكس – بيكو", "معاهدة سان جرمان", "معاهدة سيفر", "معاهدة لوزان"], correct: 0 },
+            { num: 39, q: "قضى صلاح الدين الأيوبي على التمردات والاضطرابات الاقتصادية بمصر عقب توليه الوزارة من خلال:", options: ["إلغاء وتخفيف الضرائب والمكوس الجائرة عن الناس", "الاستدانة من الخارج", "مصادرة أموال التجار", "رفع أسعار الحبوب"], correct: 0 },
+            { num: 40, q: "استمرت المرحلة المكية في دعوة النبي محمد ﷺ قبل الهجرة إلى المدينة المنورة مدة:", options: ["13 عاماً", "10 أعوام", "15 عاماً", "20 عاماً"], correct: 0 },
+            { num: 41, q: "استناداً إلى الحديث النبوي وتاريخ الأنساب، يرجع أصل ومبتدأ تفريع اللغة العربية إلى الجد:", options: ["يعرب بن قحطان", "عدنان", "مضر", "حمير"], correct: 0 },
+            { num: 42, q: "أول ملوك المملكة العربية السعودية الذي اتخذ رسمياً لقب (خادم الحرمين الشريفين) هو الملك:", options: ["فهد بن عبد العزيز رحمه الله", "خالد بن عبد العزيز", "فيصل بن عبد العزيز", "سعود بن عبد العزيز"], correct: 0 },
+            { num: 43, q: "قوله تعالى: {سَيَقُولُونَ ثَلَاثَةٌ رَّابِعُهُمْ كَلْبُهُمْ... رَجْمًا بِالْغَيْبِ} يدل في منهج البحث التاريخي على أن بعض الروايات:", options: ["ظنية الثبوت وتعتمد على التخمين ونقص الدليل", "قطعية الدلالة حتماً", "محققة علمياً دائماً", "لا تقبل التمحيص والنقد"], correct: 0 },
+            { num: 44, q: "أول عمل عمراني وديني قام به النبي ﷺ فور وصوله مشارف المدينة المنورة في الهجرة:", options: ["تأسيس وبناء مسجد قباء", "حفر الخندق", "بناء دار الندوة", "سك النقود"], correct: 0 },
+            { num: 45, q: "قامت مملكة حِمْيَر القديمة في اليمن وازدهرت بعد سقوط وانهيار دولة:", options: ["مملكة سبأ", "مملكة الغساسنة", "مملكة الحيرة", "مملكة كندة"], correct: 0 },
+            { num: 46, q: "القاسم التاريخي والحضاري المشترك بين العواصم الإسلامية الكبرى (دمشق، والقاهرة، وبغداد):", options: ["أن كلاً منها كانت عاصمة كبرى لدولة خلافة إسلامية مركزية", "أنها تقع جميعاً في شبه الجزيرة", "أنها تأسست في عهد الراشدين", "أنها مدن ساحلية بحرية"], correct: 0 },
+            { num: 47, q: "عُرفت بلاد اليمن قديماً في كتب الجغرافيا والتاريخ الكلاسيكية باسم بلاد:", options: ["العربية السعيدة (Arabia Felix)", "الهلال الخصيب", "أرض الرافدين", "بلاد البونت"], correct: 0 },
+            { num: 48, q: "أفضل وسيلة تعليمية توضح حركة الجيوش واتساع رقعة الفتوحات الإسلامية للطلاب هي:", options: ["الخرائط التاريخية الحركية المصورة", "القصائد الشعرية الحماسية", "النصوص النثرية المجردة", "التسجيلات الإذاعية الصوتية"], correct: 0 },
+            { num: 49, q: "أقدم الحضارات الإنسانية العريقة التي قامت واستقرت في جنوب بلاد الرافدين (العراق):", options: ["الحضارة السومرية", "الحضارة الفينيقية", "الحضارة الإغريقية", "الحضارة الرومانية"], correct: 0 },
+            { num: 50, q: "الرئيس الأمريكي الذي قاد البلاد خلال الحرب الأهلية وأصدر إعلان تحرير وإلغاء الرق عام 1863م:", options: ["أبراهام لينكولن", "جورج واشنطن", "توماس جيفرسون", "ثيودور روزفلت"], correct: 0 },
+            { num: 51, q: "المقصود بالمسجد الأقصى المبارك المذكور في سورة الإسراء من الناحية التاريخية والشرعية هو:", options: ["كامل السور والساحة الشاملة للمسجدين (القبلي وقبة الصخرة)", "المسجد القبلي ذو القبة الرصاصية فقط", "مسجد قبة الصخرة فقط", "حائط البراق فقط"], correct: 0 },
+            { num: 52, q: "تم البدء الفعلي بحفر مشروع قناة السويس في مصر عام 1859م في عهد الوالي:", options: ["محمد سعيد باشا", "الخديوي إسماعيل", "عباس حلمي الأول", "إبراهيم باشا"], correct: 0 },
+            { num: 53, q: "أول حكام الأسرة العلوية بمصر الذي حصل رسمياً من السلطان العثماني على لقب (خديوي) عام 1867م:", options: ["إسماعيل باشا", "محمد علي باشا", "سعيد باشا", "توفيق باشا"], correct: 0 },
+            { num: 54, q: "من أبرز أمراء نجد وحكام الرياض الذين عادوا وحاربوا الدعوة الإصلاحية والدولة السعودية الأولى قرابة ثلاثين عاماً:", options: ["دهام بن دواس", "عريعر بن دجين", "زيد بن دريع", "حسن بن هبة الله"], correct: 0 },
+            { num: 55, q: "تُنسب النظرية البيولوجية التطورية التي شكلت ركيزة للفكر المادي الحديث في الغرب إلى العالم:", options: ["تشارلز داروين", "غريغور مندل", "لويس باستور", "كارل لينيوس"], correct: 0 },
+            { num: 56, q: "النبي الكريم الذي يُعد أول أولي العزم الخمسة من الرسل وصاحب السفينة والطوفان:", options: ["نوح عليه السلام", "هود عليه السلام", "صالح عليه السلام", "إدريس عليه السلام"], correct: 0 },
+            { num: 57, q: "المصطلح الأنثروبولوجي التاريخي (Ethnos) يُقصد به دراسة وتصنيف المجتمعات والشعوب على أساس:", options: ["عرقي وثقافي وقومي", "طبقي اقتصادي فقط", "جغرافي مناخي بحت", "لغوي فردي"], correct: 0 },
+            { num: 58, q: "المعركة التاريخية الحاسمة التي انتصر فيها الخليفة علي بن أبي طالب رضي الله عنه على الخوارج عام 38هـ:", options: ["معركة النهروان", "معركة صفين", "معركة الجمل", "معركة الكوفة"], correct: 0 },
+            { num: 59, q: "السبب الرئيس والحاسم وراء ضعف وسقوط الدولة الأموية في دمشق عام 132هـ:", options: ["النزاع والانقسام الداخلي بين أبناء البيت الأموي وظهور الدعوة العباسية", "الاحتلال الصليبي", "شح الموارد الاقتصادية", "التفوق العسكري البيزنطي"], correct: 0 },
+            { num: 60, q: "بدأت الفترة الأولى من حكم الإمام فيصل بن تركي في الدولة السعودية الثانية عام:", options: ["1250هـ", "1240هـ", "1260هـ", "1270هـ"], correct: 0 },
+            { num: 61, q: "بلغت الدولة السعودية الأولى أقصى اتساع جغرافي ونفوذ سياسي لها في عهد الإمام:", options: ["سعود بن عبد العزيز (سعود الكبير)", "محمد بن سعود", "عبد العزيز بن محمد", "عبد الله بن سعود"], correct: 0 },
+            { num: 62, q: "فرض العثمانيون سيطرتهم النهائية على مصر وأنهوا حكم المماليك بعد معركة:", options: ["الريدانية (1517م)", "مرج دابق", "عين جالوت", "حطين"], correct: 0 },
+            { num: 63, q: "تولى حكم مصر وقيادة الجيش رسمياً بعد وفاة والده محمد علي باشا عام 1848م القائد:", options: ["إبراهيم باشا", "عباس حلمي الأول", "سعيد باشا", "الخديوي إسماعيل"], correct: 0 },
+            { num: 64, q: "مؤرخ إسلامي رائد ومصنف كتاب (الطبقات الكبرى) في تراجم الصحابة والتابعين:", options: ["محمد بن سعد (كاتب الواقدي)", "ابن جرير الطبري", "ابن قتيبة", "ابن عبد البر"], correct: 0 },
+            { num: 65, q: "يُطلق اسما (طسم وجديس) في تاريخ العرب القديم على قبائل عربية من تصنيف:", options: ["العرب البائدة القديمة", "العرب العاربة القحطانية", "العرب المستعربة العدنانية", "الأحلاف المتأخرة"], correct: 0 },
+            { num: 66, q: "المؤتمر الوطني والسياسي الذي أقر فيه الملك عبد العزيز والعلماء تجهيز الجيوش لضم الحجاز عام 1342هـ:", options: ["مؤتمر الرياض", "مؤتمر العقير", "مؤتمر الكويت", "مؤتمر مكة المكرمة"], correct: 0 },
+            { num: 67, q: "أسماء الشهور المعربة السائدة في بلاد الشام والعراق (شباط، وآذار، ونيسان) اشتقت من اللغة:", options: ["السريانية والآرامية القديمة", "القبطية", "الفارسية", "اللاتينية"], correct: 0 },
+            { num: 68, q: "البحار الإيطالي الذي أبحر تحت رعاية التاج الإسباني ووصل إلى جزر أمريكا عام 1492م:", options: ["كريستوفر كولومبوس", "أمريكو فسبوتشي", "ماجلان", "ماركو بولو"], correct: 0 },
+            { num: 69, q: "نُقش شاهد قبر امرئ القيس المعروف بـ (حجر النمارة) المكتشف بالشام بالخط العربي المشتق من القلم:", options: ["النبطي المتأخر", "المسند الجنوبي", "المسماري", "الهيروغليفي"], correct: 0 },
+            { num: 70, q: "سقطت عاصمة الخلافة العباسية بغداد ودُمرت على يد هولاكو خان المغولي عام:", options: ["656هـ (1258م)", "583هـ", "699هـ", "750هـ"], correct: 0 },
+            { num: 71, q: "الترتيب البنائي الهرمي الصحيح للبنية المعرفية في مادة التاريخ من القاعدة إلى القمة:", options: ["حقائق ← مفاهيم ← تعميمات ونظريات", "تعميمات ← مفاهيم ← حقائق", "مفاهيم ← حقائق ← تعميمات", "نظريات ← حقائق ← مفاهيم"], correct: 0 },
+            { num: 72, q: "المدينة المدورة التاريخية التي أسسها وبناها الخليفة أبو جعفر المنصور عام 145هـ لتكون عاصمة للعباسيين:", options: ["بغداد (دار السلام)", "سامراء", "الرصافة", "الفسطاط"], correct: 0 },
+            { num: 73, q: "تولى إدارة التعليم وتأسيس المدارس في العهد المبكر للملك عبد العزيز جهاز حكومي سُمي بـ:", options: ["مديرية المعارف العامة (1344هـ)", "وزارة التربية الوطنية", "مجلس التعليم العالي", "هيئة المعاهد"], correct: 0 },
+            { num: 74, q: "الترتيب الزمني التاريخي والرسالي الصحيح لبعثة الأنبياء عليهم السلام:", options: ["نوح ← إبراهيم ← موسى ← عيسى عليهم السلام", "إبراهيم ← نوح ← عيسى ← موسى", "نوح ← موسى ← إبراهيم ← عيسى", "موسى ← نوح ← إبراهيم ← عيسى"], correct: 0 },
+            { num: 75, q: "مدينة البتراء الأثرية المنحوتة في الصخور جنوب الأردن كانت عاصمة لحضارة ومملكة:", options: ["الأنباط العربية", "الغساسنة", "الموآبيين", "الآدوميين"], correct: 0 },
+            { num: 76, q: "خضعت دولة جيبوتي (ساحل الصومال الفرنسي قديماً) لسنوات طويلة تحت طائلة الاستعمار:", options: ["الفرنسي", "البريطاني", "الإيطالي", "البرتغالي"], correct: 0 },
+            { num: 77, q: "توفي الشيخ المجدد محمد بن عبد الوهاب رحمه الله تعالى في الدرعية عام:", options: ["1206هـ (1792م)", "1157هـ", "1233هـ", "1180هـ"], correct: 0 },
+            { num: 78, q: "الجيش الإسلامي الذي جهزه النبي ﷺ قبل وفاته وأنفذه الخليفة أبو بكر الصديق بقيادة أسامة بن زيد كان لقتال:", options: ["الروم البيزنطيين في البلقاء", "الفرس الساسانيين", "يهود خيبر", "مشركي قريش"], correct: 0 },
+            { num: 79, q: "الدافع النفسي والعلة التي أدت إلى وقوع أول جريمة قتل في تاريخ البشرية بين ابني آدم (قابيل وهابيل):", options: ["الحسد والبغي ورفض تقبل القربان", "التنافس على الأرض والمزارع", "الخلاف الديني العقائدي", "السرقة"], correct: 0 },
+            { num: 80, q: "رفض الملك عبد العزيز رحمه الله الانضمام لعصبة الأمم بعد الحرب العالمية الأولى رسمياً بسبب:", options: ["اشتمال ميثاقها (المادة 22) على بند يشرعن ويفرض الانتداب على الشعوب العربية", "رفض الدول الكبرى له", "التحالف مع ألمانيا", "انعدام الرسوم المالية"], correct: 0 },
+            { num: 81, q: "الدولة الإسلامية التي كان لها الفضل التاريخي في توحيد المغرب الأقصى وإنقاذ الأندلس في معركة الزلاقة (479هـ):", options: ["دولة المرابطين (بقيادة يوسف بن تاشفين)", "الدولة الفاطمية", "دولة الأغالبة", "الدولة الزيانية"], correct: 0 },
+            { num: 82, q: "الترتيب الزمني الدقيق والوقائعي لأحداث السيرة النبوية والتاريخ الراشدي:", options: ["الإسراء والمعراج ← بيعة العقبة الأولى ← بيعة العقبة الثانية ← سقيفة بني ساعدة", "بيعة العقبة الأولى ← الإسراء ← سقيفة بني ساعدة ← بيعة العقبة الثانية", "الإسراء ← سقيفة بني ساعدة ← بيعة العقبة الأولى ← بيعة العقبة الثانية", "بيعة العقبة الثانية ← بيعة العقبة الأولى ← الإسراء ← سقيفة بني ساعدة"], correct: 0 },
+            { num: 83, q: "اغتيل الخليفة الراشد عمر بن الخطاب رضي الله عنه عام 23هـ على يد أبي لؤلؤة المجوسي نتيجة:", options: ["مؤامرة حاقدة بعد تدفق السبايا والرموز الفارسية والمجوسية للمدينة", "فتنة الخوارج المبكرة", "نزاع قبلي داخل قريش", "تمرّد جيش الشام"], correct: 0 },
+            { num: 84, q: "اندلعت حروب وثورة (الفروند - Fronde) الأهلية ضد استبداد الحكم الملكي في فرنسا خلال حكم الملك:", options: ["لويس الرابع عشر (في فترة وصاية مازاران)", "لويس السادس عشر", "هنري الرابع", "شارل العاشر"], correct: 0 },
+            { num: 85, q: "وقعت معركة أُحُد الخالدة بين المسلمين ومشركي قريش في شوال من العام:", options: ["3 هجرية", "2 هجرية", "5 هجرية", "7 هجرية"], correct: 0 },
+            { num: 86, q: "السلطان العثماني الذي تبنى رسمياً مشروع ودعوة (الجامعة الإسلامية) لتوحيد العالم الإسلامي ضد الاستعمار:", options: ["السلطان عبد الحميد الثاني", "السلطان عبد المجيد الأول", "السلطان سليم الثالث", "السلطان محمود الثاني"], correct: 0 },
+            { num: 87, q: "مؤلف كتاب الطبقات الكبير الذي يُعد من أقدم وأوسع مراجع التراجم والرجال في التاريخ الإسلامي هو:", options: ["محمد بن سعد الزهري (ابن سعد)", "ابن حبان البستي", "أبو نعيم الأصبهاني", "الخطيب البغدادي"], correct: 0 },
+            { num: 88, q: "سقطت مدينة ومملكة غرناطة آخر معاقل المسلمين في الأندلس عام 1492م في عهد الملكين الكاثوليكيين نتيجة:", options: ["الحصار الشديد والانقسام الداخلي وانعدام الدعم والنجدة من الدول الإسلامية", "تفوق البحرية العثمانية", "الزلزال المدمر", "تمرد الموريسكيين المفاجئ"], correct: 0 }
+        ];
+
+        function balanceQuizOptions(dataset) {
+            return dataset.map((item, index) => {
+                const correctText = item.options[item.correct];
+                const wrongOptions = item.options.filter((_, i) => i !== item.correct);
+                const shuffledWrongs = [...wrongOptions].sort(() => 0.5 - Math.random());
+                const targetIndex = index % 4;
+                
+                const finalOptions = [];
+                let wrongPtr = 0;
+                for (let pos = 0; pos < 4; pos++) {
+                    if (pos === targetIndex) {
+                        finalOptions.push(correctText);
+                    } else {
+                        finalOptions.push(shuffledWrongs[wrongPtr++]);
+                    }
+                }
+                
+                return {
+                    num: item.num,
+                    q: item.q,
+                    options: finalOptions,
+                    correct: targetIndex
+                };
+            });
+        }
+
+        var cardsData = balanceQuizOptions(rawCardsData);
+        cardsData.push({
+            isConclusion: true,
+            title: "تمنياتي لكم بالتوفيق والنجاح",
+            subTitle: "لا يخرج منها أي اختبار"
+        });
+
+        var letters = ["أ", "ب", "ج", "د"];
+        var currentIndex = 0;
+        var score = 0;
+        var answersState = {};
+
+        const canvas = document.getElementById('drawCanvas');
+        const ctx = canvas.getContext('2d');
+
+        function resizeCanvas() {
+            const wrapper = document.getElementById('quiz-app-wrapper');
+            canvas.width = wrapper.offsetWidth;
+            canvas.height = wrapper.offsetHeight;
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+        window.addEventListener('load', resizeCanvas);
+
+        function render() {
+            if (cardsData.length === 0) return;
+            if (currentIndex >= cardsData.length) currentIndex = cardsData.length - 1;
+
+            var item = cardsData[currentIndex];
+            var totalQCount = cardsData.filter(c => !c.isConclusion).length;
+
+            document.getElementById("progress-bar").style.width = ((currentIndex + 1) / cardsData.length * 100) + "%";
+            document.getElementById("btn-prev").disabled = (currentIndex === 0);
+            document.getElementById("btn-next-top").disabled = (currentIndex === cardsData.length - 1);
+
+            var cardBody = document.getElementById("card-body-content");
+
+            if (item.isConclusion) {
+                document.getElementById("question-count").innerText = "الشريحة الختامية";
+                document.getElementById("score-count").innerText = `النقاط النهائية: ${score} من ${totalQCount}`;
+                
+                cardBody.innerHTML = `
+                    <div class="conclusion-card-box">
+                        <div style="font-size: 50px; margin-bottom: 10px;">🌟🎓🌟</div>
+                        <div class="conclusion-main-title">${item.title}</div>
+                        <div class="conclusion-sub-tag">${item.subTitle}</div>
+                    </div>
+                `;
+            } else {
+                document.getElementById("question-count").innerText = `السؤال ${currentIndex + 1} من ${totalQCount}`;
+                document.getElementById("score-count").innerText = `النقاط: ${score}`;
+
+                var hasAnswered = answersState.hasOwnProperty(currentIndex);
+                var qNumber = item.num !== undefined ? item.num : (currentIndex + 1);
+
+                cardBody.innerHTML = `
+                    <div class="question-card-container">
+                        <div class="question-header-row">
+                            <div class="badge-q-tag">سؤال ${qNumber}</div>
+                            <div class="q-text-content">${item.q}</div>
+                        </div>
+                    </div>
+                    <div class="options-grid" id="options-container"></div>
+                `;
+
+                var container = document.getElementById("options-container");
+                for (var idx = 0; idx < item.options.length; idx++) {
+                    (function(i) {
+                        var btn = document.createElement("button");
+                        btn.className = "option-btn";
+                        var checkHtml = (hasAnswered && i === item.correct) ? '<span class="check-mark">✔</span>' : "";
+
+                        btn.innerHTML = `<span class="opt-letter">${letters[i]}</span><span class="opt-text">${item.options[i]}</span>${checkHtml}`;
+
+                        if (hasAnswered) {
+                            btn.disabled = true;
+                            if (i === item.correct) btn.className += " correct";
+                            else if (i === answersState[currentIndex]) btn.className += " wrong";
+                        } else {
+                            btn.onclick = function() { selectOption(i); };
+                        }
+                        container.appendChild(btn);
+                    })(idx);
+                }
+            }
+            resizeCanvas();
+        }
+
+        function selectOption(selectedIndex) {
+            if (answersState.hasOwnProperty(currentIndex)) return;
+            answersState[currentIndex] = selectedIndex;
+            var item = cardsData[currentIndex];
+
+            if (selectedIndex === item.correct) {
+                score++;
+                document.getElementById("score-count").innerText = "النقاط: " + score;
+            }
+            render();
+        }
+
+        function nextQuestion() {
+            if (currentIndex < cardsData.length - 1) {
+                currentIndex++;
+                render();
+            }
+        }
+
+        function prevQuestion() {
+            if (currentIndex > 0) {
+                currentIndex--;
+                render();
+            }
+        }
+
+        render();
+    </script>
+</body>
+</html>
